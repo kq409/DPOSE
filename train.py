@@ -1,4 +1,5 @@
 import json
+import argparse
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader, Subset
@@ -10,15 +11,25 @@ import random
 import torchvision
 from torchvision.transforms import InterpolationMode
 
-def train_3d_diffusion():
+def get_args():
+    parser = argparse.ArgumentParser(description="Train 3D diffusion model")
+    parser.add_argument("--n_epoch", type=int, default=500, help="Number of training epochs")
+    parser.add_argument("--batch_size", type=int, default=2048, help="Batch size for training")
+    parser.add_argument("--n_T", type=int, default=500, help="Number of timesteps in diffusion")
+    parser.add_argument("--n_feat", type=int, default=128, help="Number of features in network")
+    parser.add_argument("--lrate", type=float, default=4e-4, help="Learning rate")
+    parser.add_argument("--save_model_dir", type=str, default="../models/wc", help="Path to save model")
+    return parser.parse_args()
+
+def train_3d_diffusion(args):
     # Params
-    n_epoch = 500
-    batch_size = 2048
-    n_T = 500
+    n_epoch = args.n_epoch
+    batch_size = args.batch_size
+    n_T = args.n_T
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    n_feat = 128
-    lrate = 4e-4
-    save_model_dir = "../models/wc"
+    n_feat = args.n_feat
+    lrate = args.lrate
+    save_model_dir = args.save_model_dir
     best_val_loss = float("inf")
 
     # Pre-processing
@@ -61,7 +72,7 @@ def train_3d_diffusion():
     val_loader = DataLoader(Subset(dataset, indices[train_size:train_size+val_size]), batch_size=batch_size, shuffle=False, num_workers=2)
 
     # Init model
-    ddpm = DDPM(nn_model=MaskedDenseFusion(n_feat=n_feat, out_dim=3),
+    ddpm = DDPM(nn_model=Estimator(n_feat=n_feat, out_dim=3),
                 betas=(1e-4, 0.02), n_T=n_T, device=device, drop_prob=0.1)
     ddpm.to(device)
     optimizer = optim.Adam(ddpm.parameters(), lr=lrate)
@@ -129,4 +140,5 @@ def train_3d_diffusion():
     print("Training completed!")
 
 if __name__ == "__main__":
-    train_3d_diffusion()
+    args = get_args()
+    train_3d_diffusion(args)
