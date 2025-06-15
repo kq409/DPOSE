@@ -6,10 +6,10 @@ def extract_urdf(num_files, folder_path, dataset_path = "../dataset"):
     """
     Extract banana positions from URDF files.
 
-    Args:
-        folder_path: Folder path for URDF files
-        dataset_path: Folder path for dataset
-        num_files: Number of URDF files
+
+    :param folder_path: Folder path for URDF files
+    :param dataset_path: Folder path for dataset
+    :param num_files: Number of URDF files
     """
 
     # URDF path

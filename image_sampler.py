@@ -25,14 +25,15 @@ def load_data(txt_file_path):
 def get_valid_camera_positions(scene, banana_pos, num_cameras=5, min_dist=0.1, max_dist=1.5):
     """
     Sample camera positions randomly in a scene.
-    Use get_random_point_by_room_type("kitchen") to make sure sampled positions are in the kitchen.
 
-    Args:
-        scene: iGibson scene instance
-        banana_pos: Banana position
-        num_cameras: number of cameras
-        min_dist: minimum distance between the banana and sampled positions
-        max_dist: maximum distance between the banana and sampled positions
+    Use ``get_random_point_by_room_type("kitchen")`` to ensure sampled positions are in the kitchen.
+
+    :param scene: iGibson scene instance
+    :param banana_pos: Position of the banana (3D coordinates)
+    :param num_cameras: Number of camera positions to sample
+    :param min_dist: Minimum distance between the banana and sampled camera positions
+    :param max_dist: Maximum distance between the banana and sampled camera positions
+    :return: An numpy array of sampled camera positions
     """
 
     valid_camera_positions = []
